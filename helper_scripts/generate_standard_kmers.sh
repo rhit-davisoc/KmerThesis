@@ -78,13 +78,13 @@ mkdir $standard_folder/kmer_counts/$test_name"/" &&
 
 for i in $(seq 0 $((num_indv-1)))
 do
-    KMC3/kmc -t$cpus -k$km -ci$min_count $read_file_path"n"$i"_R1.fastq" ./kmer_counts/tmp/$test_name"/n"$i"_R1" .&&
+    KMC3/kmc -t$cpus -k$km -ci$min_count $read_file_path"n"$i"_R1.fastq" $standard_folder/kmer_counts/tmp/$test_name"/n"$i"_R1" .&&
 
-    KMC3/kmc -t$cpus -k$km -ci$min_count $read_file_path"n"$i"_R2.fastq" ./kmer_counts/tmp/$test_name"/n"$i"_R2" . &&
+    KMC3/kmc -t$cpus -k$km -ci$min_count $read_file_path"n"$i"_R2.fastq" $standard_folder/kmer_counts/tmp/$test_name"/n"$i"_R2" . &&
 
-    ./KMC3/bin/kmc_tools -t$cpus simple ./kmer_counts/tmp/$test_name"/n"$i"_R1" ./kmer_counts/tmp/$test_name"/n"$i"_R2" union ./kmer_counts/tmp/$test_name/n$i &&
+    ./KMC3/bin/kmc_tools -t$cpus simple $standard_folder/kmer_counts/tmp/$test_name"/n"$i"_R1" $standard_folder/kmer_counts/tmp/$test_name"/n"$i"_R2" union $standard_folder/kmer_counts/tmp/$test_name/n$i &&
 
-    ./KMC3/bin/kmc_tools -t$cpus transform ./kmer_counts/tmp/$test_name/n$i  dump ./kmer_counts/$test_name/n$i.txt
+    ./KMC3/bin/kmc_tools -t$cpus transform $standard_folder/kmer_counts/tmp/$test_name/n$i  dump $standard_folder/kmer_counts/$test_name/n$i.txt
 done
 
 for i in $(seq 0 $((num_indv-1)))
@@ -93,9 +93,9 @@ do
     do
         if [ $i -lt $j ]
         then
-            ./KMC3/bin/kmc_tools -t$cpus simple ./kmer_counts/tmp/$test_name"/n"$i ./kmer_counts/tmp/$test_name"/n"$j intersect ./kmer_counts/tmp/$test_name/n$i"_n"$j &&
+            ./KMC3/bin/kmc_tools -t$cpus simple $standard_folder/kmer_counts/tmp/$test_name"/n"$i $standard_folder/kmer_counts/tmp/$test_name"/n"$j intersect $standard_folder/kmer_counts/tmp/$test_name/n$i"_n"$j &&
 
-            ./KMC3/bin/kmc_tools -t$cpus transform ./kmer_counts/tmp/$test_name/n$i"_n"$j  dump ./kmer_counts/$test_name/n$i"_inter_n$j".txt
+            ./KMC3/bin/kmc_tools -t$cpus transform $standard_folder/kmer_counts/tmp/$test_name/n$i"_n"$j  dump $standard_folder/kmer_counts/$test_name/n$i"_inter_n$j".txt
         fi
     done
 done
