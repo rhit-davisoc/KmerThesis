@@ -13,14 +13,16 @@ div_metric="BC"
 km=10
 cpus=50
 min_count=5
-test_name="true_div_rm_5"
+test_name="bc_hashes"
+type="BC"
 
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         -c|--cov) coverage="$2"; shift ;;
         -k|--kmer) km="$2"; shift ;;
         -m|--mut) mut_rate="$2"; shift ;;
-        -n|--name) mut_rate="$2"; shift ;;
+        -n|--name) test_name="$2"; shift ;;
+        -t|--type) type="$2"; shift ;;
         *) echo "Unknown parameter passed: $1"; exit 1 ;;
     esac
     shift
@@ -36,7 +38,8 @@ tree_path="./SLIM/generated_trees/"$tree_file_name
 output_file="./output/"$test_name".csv"
 
 # Helper Variables (don't change)
-reads=$(echo $((coverage*2000000/126)))
+reads=$(echo $((coverage*2033342/126)))
+#158730
 fasta_file_name=$test_name".fa"
 fasta_file_path="./fasta_files/"$fasta_file_name
 split_fasta_path="./fasta_files/"$test_name"/"
@@ -55,7 +58,7 @@ mkdir $split_fasta_path &&
 
 python3 ./tskit_msprime/splitfasta.py $fasta_file_path $split_fasta_path &&
 
-python3 ./tskit_msprime/count_snps.py $split_fasta_path $output_file
+python3 ./tskit_msprime/count_snps.py $split_fasta_path ./true_div/div.txt
 # Simulate reads from fasta files
 
 mkdir $read_file_path &&

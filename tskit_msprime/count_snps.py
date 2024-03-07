@@ -26,5 +26,5 @@ diff -= 2
 print("diff: %d,total: %d" %(diff,total))
 
 f = open(output,"a")
-f.write(str(diff) + ",")
+f.write(str(diff))
 f.close()

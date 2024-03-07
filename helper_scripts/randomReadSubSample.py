@@ -3,6 +3,8 @@
 # Code is not my own. Credit:
 # https://github.com/pirovc/metameta/blob/master/scripts/randomReadSubSample.py
 
+# Modified by Olivia Davis
+
 import argparse, gzip
 from itertools import islice
 import numpy as np
@@ -15,6 +17,7 @@ def main():
     global ext
     global temp_list
     global lines
+    global seq_list
 	
     parser = argparse.ArgumentParser()
     parser.add_argument('-f', metavar='<fasta_q_files>', dest="fasta_q_files", help="fasta/fastq [.gz] single file")
@@ -67,7 +70,7 @@ def main():
 
     ############################### CREATE LISTS
     # sample size, create a list with all reads and shuffle it
-    seq_list = list(range(0,seqs))
+    seq_list = np.random.choice(range(0,seqs),seqs)
     np.random.shuffle(seq_list)
     temp_list = []
     if args.sample_size==1: # Use the whole set
@@ -122,9 +125,9 @@ def write_files(s):
 		file_out = gzip.open(file_name, 'wt') if args.gzip_output else open(file_name, 'w')
 
 	pointer_pos = 0
-	for read_pos in temp_list[s//2]:
-		file_out.write(''.join(list(islice(file, int((read_pos-pointer_pos)*lines), int((read_pos-pointer_pos+1)*lines)))))
-		pointer_pos = read_pos+1
+	for read_pos in seq_list:
+		file_out.write(''.join(list(islice(file, int((read_pos)*lines), int((read_pos+1)*lines)))))
+		# pointer_pos = read_pos+1
 	file.close()
 	file_out.close()
 	
