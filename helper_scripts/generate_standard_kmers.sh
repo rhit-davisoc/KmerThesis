@@ -5,7 +5,7 @@ OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
 # Initialize our own variables:
 # Model Variables
-mut_rate=0.00001
+mut_rate=0.0001
 coverage=10
 num_indv=2
 seed=101
@@ -37,14 +37,14 @@ tree_file_name=$test_name".trees"
 tree_path="./SLIM/generated_trees/"$tree_file_name
 output_file="./output/"$test_name".csv"
 standard_folder="./standard_test_data"
+ref_seq="./arabidopsis_data/low_repeat_region.txt"
 
 # Helper Variables (don't change)
-reads=$(echo $((coverage*2033342/126)))
-#158730
+reads=$(echo $((coverage*100000/126)))
 fasta_file_name=$test_name".fa"
-fasta_file_path="./fasta_files/"$fasta_file_name
-split_fasta_path="./fasta_files/"$test_name"/"
-read_file_path="./reads/"$test_name"/"
+fasta_file_path="$standard_folder/fasta_files/"$fasta_file_name
+split_fasta_path="$standard_folder/fasta_files/"$test_name"/"
+read_file_path="$standard_folder/reads/"$test_name"/"
 
 # [Commands Run]
 
@@ -53,49 +53,51 @@ read_file_path="./reads/"$test_name"/"
 
 ./SLIM/slimexe -d "file_name='./SLIM/generated_trees/$tree_file_name'" -d mut_rate=$mut_rate ./SLIM/generate_tree.slim &&
 
-python3 ./tskit_msprime/tree_to_fasta.py $tree_path $fasta_file_path $seed $num_indv&&
+python3 ./tskit_msprime/stand_tree_to_fasta.py $tree_path $fasta_file_path $seed $num_indv $ref_seq&&
 
 mkdir $split_fasta_path &&
 
-python3 ./tskit_msprime/splitfasta.py $fasta_file_path $split_fasta_path &&
+python3 ./tskit_msprime/splitfasta.py $fasta_file_path $split_fasta_path #don't forget to put && back
 
-python3 ./tskit_msprime/count_snps.py $split_fasta_path $output_file
+# Read comment above.. don't forget &&
+
+# python3 ./tskit_msprime/count_snps.py $split_fasta_path $output_file
 # Simulate reads from fasta files
 
-mkdir $read_file_path &&
+# mkdir $read_file_path &&
 
-for i in $(seq 0 $((num_indv-1)))
-do
-    iss generate --genomes $split_fasta_path"n"$i".fa" --cpus $cpus --n_reads $reads --model hiseq --output $read_file_path"/n"$i
-done
+# for i in $(seq 0 $((num_indv-1)))
+# do
+#     iss generate --genomes $split_fasta_path"n"$i".fa" --cpus $cpus --n_reads $reads --model hiseq --output $read_file_path"/n"$i
+# done
 
 
-# Get kmer counts with KMC3
+# # Get kmer counts with KMC3
 
-mkdir $standard_folder/kmer_counts/tmp/
-mkdir $standard_folder/kmer_counts/tmp/$test_name"/" &&
-mkdir $standard_folder/kmer_counts/$test_name"/" &&
+# mkdir $standard_folder/kmer_counts/tmp/
+# mkdir $standard_folder/kmer_counts/tmp/$test_name"/" &&
+# mkdir $standard_folder/kmer_counts/$test_name"/" &&
 
-for i in $(seq 0 $((num_indv-1)))
-do
-    KMC3/kmc -t$cpus -k$km -ci$min_count $read_file_path"n"$i"_R1.fastq" $standard_folder/kmer_counts/tmp/$test_name"/n"$i"_R1" .&&
+# for i in $(seq 0 $((num_indv-1)))
+# do
+#     KMC3/kmc -t$cpus -k$km -ci$min_count $read_file_path"n"$i"_R1.fastq" $standard_folder/kmer_counts/tmp/$test_name"/n"$i"_R1" .&&
 
-    KMC3/kmc -t$cpus -k$km -ci$min_count $read_file_path"n"$i"_R2.fastq" $standard_folder/kmer_counts/tmp/$test_name"/n"$i"_R2" . &&
+#     KMC3/kmc -t$cpus -k$km -ci$min_count $read_file_path"n"$i"_R2.fastq" $standard_folder/kmer_counts/tmp/$test_name"/n"$i"_R2" . &&
 
-    ./KMC3/bin/kmc_tools -t$cpus simple $standard_folder/kmer_counts/tmp/$test_name"/n"$i"_R1" $standard_folder/kmer_counts/tmp/$test_name"/n"$i"_R2" union $standard_folder/kmer_counts/tmp/$test_name/n$i &&
+#     ./KMC3/bin/kmc_tools -t$cpus simple $standard_folder/kmer_counts/tmp/$test_name"/n"$i"_R1" $standard_folder/kmer_counts/tmp/$test_name"/n"$i"_R2" union $standard_folder/kmer_counts/tmp/$test_name/n$i &&
 
-    ./KMC3/bin/kmc_tools -t$cpus transform $standard_folder/kmer_counts/tmp/$test_name/n$i  dump $standard_folder/kmer_counts/$test_name/n$i.txt
-done
+#     ./KMC3/bin/kmc_tools -t$cpus transform $standard_folder/kmer_counts/tmp/$test_name/n$i  dump $standard_folder/kmer_counts/$test_name/n$i.txt
+# done
 
-for i in $(seq 0 $((num_indv-1)))
-do
-    for j in $(seq 0 $((num_indv-1)))
-    do
-        if [ $i -lt $j ]
-        then
-            ./KMC3/bin/kmc_tools -t$cpus simple $standard_folder/kmer_counts/tmp/$test_name"/n"$i $standard_folder/kmer_counts/tmp/$test_name"/n"$j intersect $standard_folder/kmer_counts/tmp/$test_name/n$i"_n"$j &&
+# for i in $(seq 0 $((num_indv-1)))
+# do
+#     for j in $(seq 0 $((num_indv-1)))
+#     do
+#         if [ $i -lt $j ]
+#         then
+#             ./KMC3/bin/kmc_tools -t$cpus simple $standard_folder/kmer_counts/tmp/$test_name"/n"$i $standard_folder/kmer_counts/tmp/$test_name"/n"$j intersect $standard_folder/kmer_counts/tmp/$test_name/n$i"_n"$j &&
 
-            ./KMC3/bin/kmc_tools -t$cpus transform $standard_folder/kmer_counts/tmp/$test_name/n$i"_n"$j  dump $standard_folder/kmer_counts/$test_name/n$i"_inter_n$j".txt
-        fi
-    done
-done
+#             ./KMC3/bin/kmc_tools -t$cpus transform $standard_folder/kmer_counts/tmp/$test_name/n$i"_n"$j  dump $standard_folder/kmer_counts/$test_name/n$i"_inter_n$j".txt
+#         fi
+#     done
+# done

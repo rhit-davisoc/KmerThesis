@@ -4,7 +4,7 @@ outfile = []
 
 output_path = sys.argv[2]
 
-## Note: Splits fasta file outputed by reader, and keeps pairs together
+## Note: Splits fasta file outputed by reader
 
 for line in infile:
     if line.startswith(">"):
