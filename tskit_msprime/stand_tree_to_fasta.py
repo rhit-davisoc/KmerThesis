@@ -15,6 +15,8 @@ outputfile = sys.argv[2]
 rand_seed = int(sys.argv[3]) #Seed
 num_indv = int(sys.argv[4])
 ref_seq = sys.argv[5]
+csv_output = sys.argv[6]
+csv_line = sys.argv[7]
 
 with open(ref_seq) as file:
     data = file.read().replace('\n','')
@@ -40,5 +42,9 @@ nts.write_fasta(outputfile)
 
 print(f"The tree sequence now has {nts.num_mutations} mutations,\n"
       f"and mean pairwise nucleotide diversity is {nts.diversity():0.5e}.")
+
+f = open(csv_output,"a")
+f.write(csv_line+str(nts.diversity()))
+f.close()
 
 file.close()
