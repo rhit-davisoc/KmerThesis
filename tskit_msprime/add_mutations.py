@@ -27,6 +27,8 @@ sts = rts.simplify(keep_nodes, keep_input_roots=True)
 # Add mutations to tree with given rate, mu.
 mts = msprime.sim_mutations(sts, rate=1e-9, random_seed=5678)
 
+#Look into diversity score
+
 print(f"The tree sequence now has {mts.num_mutations} mutations,\n"
       f"and mean pairwise nucleotide diversity is {mts.diversity():0.3e}.")
 
