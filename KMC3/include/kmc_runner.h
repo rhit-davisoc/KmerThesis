@@ -4,8 +4,8 @@
 
   Authors: Sebastian Deorowicz, Agnieszka Debudaj-Grabysz, Marek Kokot
 
-  Version: 3.2.2
-  Date   : 2023-03-10
+  Version: 3.2.4
+  Date   : 2024-02-09
 */
 
 #ifndef _KMC_RUNNER

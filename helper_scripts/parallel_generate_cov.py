@@ -1,18 +1,18 @@
 import os
 import multiprocessing
-from joblib import Parallel, delayed
+# from joblib import Parallel, delayed
 
-num_cores = multiprocessing.cpu_count()
-print("num_cpus: %d" % num_cores)
+# num_cores = multiprocessing.cpu_count()
+# print("num_cpus: %d" % num_cores)
 
-j = 40
+# j = 40
 
 test_path = "./arabidopsis_sim_data/"
 
-coverages = [10,30]
+coverages = [10]
 
 start_id = 1507
-end_id = 1808
+end_id = 1508
 
 def gen_coverage(id):
     for cov in coverages:
@@ -21,4 +21,6 @@ def gen_coverage(id):
             print("./helper_scripts/generate_coverage.sh -d %d -c %d"%(id,cov))
             os.system("bash ./helper_scripts/generate_coverage.sh -d %d -c %d"%(id,cov))
 
-processed_list = Parallel(n_jobs=j)(delayed(gen_coverage)(i) for i in range(start_id,end_id))
+# processed_list = Parallel(n_jobs=j)(delayed(gen_coverage)(i) for i in range(start_id,end_id))
+
+gen_coverage(start_id)
