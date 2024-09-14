@@ -1,6 +1,9 @@
 # KmerThesis
 
-## Packages
+
+## Versions and Packages
+
+Python 3.7.16
 
 * Note: Installing pysam requires a linux or MacOS system and is necessary for running the scripts
 
@@ -14,5 +17,3 @@ Using Conda:
 
 Environments needed:
 conda-forge, bioconda, r
-
-python 3.7.16

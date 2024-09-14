@@ -3,7 +3,6 @@
 
 OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
-# Initialize our own variables:
 # Model Variables
 mut_rate=0.00001
 coverage=10
